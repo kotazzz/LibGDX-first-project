@@ -31,13 +31,16 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+import ru.newlife.gdxproject.declaration.BlockList;
+import ru.newlife.gdxproject.world.Block;
 
 public class Main extends ApplicationAdapter {
     public Environment environment;
 	public PerspectiveCamera cam;
     public ModelBatch modelBatch;
-    public Model model;
     public ModelInstance instance;
+    public ModelInstance instance2;
+    public ModelInstance instance3;
     public Vector3 position = new Vector3(10f, 10f, 10f);
     public Vector3 direction = new Vector3(0f,0f,-1f);
     public float movespeed = 1f;
@@ -46,47 +49,7 @@ public class Main extends ApplicationAdapter {
     public float sizemultiplr = 10;
     public int texture_size = 16;
     
-    public  Map<String, TextureRegion> textureRegions = new HashMap<String, TextureRegion>();
-    class BlockTexture {
-    	TextureRegion F;
-    	TextureRegion L;
-    	TextureRegion R;
-    	TextureRegion B;
-    	TextureRegion U;
-    	TextureRegion D;
-    	
-    	BlockTexture(
-    			TextureRegion F,
-    			TextureRegion L,
-    			TextureRegion R,
-    			TextureRegion B,
-    			TextureRegion U,
-    			TextureRegion D
-    			) {
-    		this.F = F;
-    		this.L = L;
-    		this.R = R;
-    		this.B = B;
-    		this.U = U;
-    		this.D = D;
-    		
-    	}
-    }
-    public BlockTexture genearateTexture(TextureRegion sixsideblock) {
-    	Texture atlas = sixsideblock.getTexture();
-        int x = sixsideblock.getRegionX();
-        int y = sixsideblock.getRegionY();
-        BlockTexture texture = new BlockTexture(
-        		new TextureRegion(atlas, x+texture_size*0, y, texture_size, texture_size),
-        		new TextureRegion(atlas, x+texture_size*1, y, texture_size, texture_size),
-        		new TextureRegion(atlas, x+texture_size*2, y, texture_size, texture_size),
-        		new TextureRegion(atlas, x+texture_size*3, y, texture_size, texture_size),
-        		new TextureRegion(atlas, x+texture_size*4, y, texture_size, texture_size),
-        		new TextureRegion(atlas, x+texture_size*5, y, texture_size, texture_size)
-        		);
-     return texture;
-        
-    }
+    
 	@Override
 	public void create () {
         environment = new Environment();
@@ -99,50 +62,17 @@ public class Main extends ApplicationAdapter {
         cam.near = 0f;
         cam.far = 300f;
         cam.update();
-        Texture atlas = new Texture("textures/block/atlas1.png");
-        TextureRegion textureslpited[][] = TextureRegion.split( atlas,  atlas.getWidth() / 5,  atlas.getHeight() / 40);
-        textureRegions.put("block1", textureslpited[0][0]);
-        textureRegions.put("brick1", textureslpited[0][1]);
-        textureRegions.put("brick2", textureslpited[1][0]);
-        textureRegions.put("brick3", textureslpited[1][1]);
-        long Attr = VertexAttributes.Usage.Position |
-                VertexAttributes.Usage.TextureCoordinates |
-                VertexAttributes.Usage.Normal;
-        ModelBuilder modelBuilder = new ModelBuilder();
-        modelBuilder.begin();
-        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).R)))
-        .rect(-0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 
-        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 
-        		-0.5f*sizemultiplr, -0.5f*sizemultiplr, 0f, 0f, -1f*sizemultiplr);
-        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).L)))
-        .rect(-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr,
-        		0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
-        		0.5f*sizemultiplr, 0.5f*sizemultiplr, 0f, 0f, 1f*sizemultiplr);
-        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).D)))
-        .rect(-0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr,
-        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr,
-        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0f, -1f*sizemultiplr, 0f);
-        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).U)))
-        .rect(-0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr,
-        		0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
-        		0.5f*sizemultiplr, -0.5f*sizemultiplr, 0f, 1f*sizemultiplr, 0f);
-        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).B)))
-        .rect(-0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr,
-        		0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr,
-        		-0.5f*sizemultiplr, -0.5f*sizemultiplr, -1f*sizemultiplr, 0f, 0f);
-        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).F)))
-        .rect(0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
-        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
-        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 1f, 0f, 0f);
-        model = modelBuilder.end();
         
-        instance = new ModelInstance(model);
+        Block gr = new Block(BlockList.blocks.get("grass"));
+        Block st = new Block(BlockList.blocks.get("grass"));
+        Block bd = new Block(BlockList.blocks.get("grass"));
+        gr.setPosition(0, 0, 0);
+        st.setPosition(1, 1, 1);
+        bd.setPosition(1, 2, 1);
+        instance = gr.instance;
+        instance2 = st.instance;
+        instance3 = bd.instance;
+        
 	}
 	
 	public void update() {
@@ -193,11 +123,12 @@ public class Main extends ApplicationAdapter {
         
         modelBatch.begin(cam);
         modelBatch.render(instance,environment);
+        modelBatch.render(instance2,environment);
+        modelBatch.render(instance3,environment);
         modelBatch.end();
 	}
 	
 	@Override
 	public void dispose () {
-        model.dispose();
 	}
 }
