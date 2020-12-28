@@ -1,21 +1,29 @@
 package ru.newlife.gdxproject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
@@ -34,6 +42,52 @@ public class Main extends ApplicationAdapter {
     public Vector3 direction = new Vector3(0f,0f,-1f);
     public float movespeed = 1f;
     public float cameraspeed = 0.004f;
+    
+    public float sizemultiplr = 10;
+    public int texture_size = 16;
+    
+    public  Map<String, TextureRegion> textureRegions = new HashMap<String, TextureRegion>();
+    class BlockTexture {
+    	TextureRegion F;
+    	TextureRegion L;
+    	TextureRegion R;
+    	TextureRegion B;
+    	TextureRegion U;
+    	TextureRegion D;
+    	
+    	BlockTexture(
+    			TextureRegion F,
+    			TextureRegion L,
+    			TextureRegion R,
+    			TextureRegion B,
+    			TextureRegion U,
+    			TextureRegion D
+    			) {
+    		this.F = F;
+    		this.L = L;
+    		this.R = R;
+    		this.B = B;
+    		this.U = U;
+    		this.D = D;
+    		
+    	}
+    }
+    public BlockTexture genearateTexture(TextureRegion sixsideblock) {
+    	Texture atlas = sixsideblock.getTexture();
+        TextureRegion textureonesplited[][] = TextureRegion.split( atlas,  atlas.getWidth() / 5*6,  atlas.getHeight() / 40);
+        int x = sixsideblock.getRegionX();
+        int y = sixsideblock.getRegionY();
+        BlockTexture texture = new BlockTexture(
+        		new TextureRegion(atlas, x+texture_size*0, y+texture_size*1, texture_size, texture_size),
+        		new TextureRegion(atlas, x+texture_size*1, y+texture_size*2, texture_size, texture_size),
+        		new TextureRegion(atlas, x+texture_size*2, y+texture_size*3, texture_size, texture_size),
+        		new TextureRegion(atlas, x+texture_size*3, y+texture_size*4, texture_size, texture_size),
+        		new TextureRegion(atlas, x+texture_size*4, y+texture_size*5, texture_size, texture_size),
+        		new TextureRegion(atlas, x+texture_size*5, y+texture_size*6, texture_size, texture_size)
+        		);
+     return texture;
+        
+    }
 	@Override
 	public void create () {
         environment = new Environment();
@@ -46,14 +100,53 @@ public class Main extends ApplicationAdapter {
         cam.near = 0f;
         cam.far = 300f;
         cam.update();
-        Texture t = new Texture("badlogic.jpg");
-        Material m = new Material(ColorAttribute.createDiffuse(Color.YELLOW)); 
-       // m.set(TextureAttribute.createDiffuse(t));
+        Texture atlas = new Texture("textures/block/atlas1.png");
+        TextureRegion textureslpited[][] = TextureRegion.split( atlas,  atlas.getWidth() / 5,  atlas.getHeight() / 40);
+        textureRegions.put("block1", textureslpited[0][0]);
+        textureRegions.put("brick1", textureslpited[0][1]);
+        textureRegions.put("brick2", textureslpited[1][0]);
+        textureRegions.put("brick3", textureslpited[1][1]);
+        TextureAttribute texat = TextureAttribute.createDiffuse(textureRegions.get("brick1"));
+        Material m = new Material(texat);
+        long Attr = VertexAttributes.Usage.Position |
+                VertexAttributes.Usage.TextureCoordinates |
+                VertexAttributes.Usage.Normal;
         ModelBuilder modelBuilder = new ModelBuilder();
-        model = modelBuilder.createBox(10f, 20f, 10f, 
-                m,
-                Usage.Position | Usage.Normal);
-        
+        modelBuilder.begin();
+        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
+    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).R)))
+        .rect(-0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 
+        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 
+        		-0.5f*sizemultiplr, -0.5f*sizemultiplr, 0f, 0f, -1f*sizemultiplr);
+        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
+    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).L)))
+        .rect(-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr,
+        		0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
+        		0.5f*sizemultiplr, 0.5f*sizemultiplr, 0f, 0f, 1f*sizemultiplr);
+        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
+    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).D)))
+        .rect(-0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr,
+        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr,
+        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0f, -1f*sizemultiplr, 0f);
+        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
+    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).U)))
+        .rect(-0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr,
+        		0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
+        		0.5f*sizemultiplr, -0.5f*sizemultiplr, 0f, 1f*sizemultiplr, 0f);
+        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
+    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).B)))
+        .rect(-0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr,
+        		0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr,
+        		-0.5f*sizemultiplr, -0.5f*sizemultiplr, -1f*sizemultiplr, 0f, 0f);
+        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
+    			TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).F)))
+        .rect(0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
+        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
+        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 1f, 0f, 0f);
+        model = modelBuilder.end();
+        //model = modelBuilder.createBox(5f, 5f, 5f, 
+        //        new Material(TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).T)),
+        //        Attr);
         instance = new ModelInstance(model);
         
 	}
