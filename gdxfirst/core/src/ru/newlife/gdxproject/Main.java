@@ -26,10 +26,13 @@ public class Main extends ApplicationAdapter {
 	public PerspectiveCamera cam;
     public ModelBatch modelBatch;
     public Model model;
+    public Model model2;
     public ModelInstance instance;
+    public ModelInstance instance2;
     public Vector3 position = new Vector3(10f, 10f, 10f);
     public Vector3 direction = new Vector3(0f,0f,0f);
-    public float speed = 1f;
+    public float movespeed = 1f;
+    public float cameraspeed = 0.01f;
 	@Override
 	public void create () {
 		
@@ -47,38 +50,50 @@ public class Main extends ApplicationAdapter {
 
         ModelBuilder modelBuilder = new ModelBuilder();
         model = modelBuilder.createBox(10f, 10f, 10f, 
-            new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-            Usage.Position | Usage.Normal);
+                new Material(ColorAttribute.createDiffuse(Color.GREEN)),
+                Usage.Position | Usage.Normal);
+        model2 = modelBuilder.createBox(10f, 20f, 10f, 
+                new Material(ColorAttribute.createDiffuse(Color.YELLOW)),
+                Usage.Position | Usage.Normal);
         instance = new ModelInstance(model);
+        instance2 = new ModelInstance(model2);
+        
 	}
+	
+	public float x = 0;
+	public float y = 0;
 	public void update() {
 		if(Gdx.input.isKeyPressed(Keys.D)) {
-			position.x+= speed;
+			position.x+= movespeed;
 		}
 
 		if(Gdx.input.isKeyPressed(Keys.A)) {
-			position.x-= speed;
+			position.x-= movespeed;
 		}
 
 		if(Gdx.input.isKeyPressed(Keys.W)) {
-			position.z-= speed;
+			position.z-= movespeed;
 		}
 
 		if(Gdx.input.isKeyPressed(Keys.S)) {
-			position.z+= speed;
+			position.z+= movespeed;
 		}
 		
 		if(Gdx.input.isKeyPressed(Keys.SPACE)) {
-			position.y += speed;
+			position.y += movespeed;
 		}
 		
 		if(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
-			position.y-= speed;
+			position.y-= movespeed;
 		}
 		
 		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			direction.x = Gdx.input.getDeltaX();
-			direction.y = Gdx.input.getDeltaY();
+			direction.y = - Gdx.input.getDeltaX();
+			direction.x = - Gdx.input.getDeltaY();
+			
+		} else {
+			direction.x = 0;
+			direction.y = 0;
 		}
 		
 		
@@ -87,15 +102,14 @@ public class Main extends ApplicationAdapter {
 	public void render () {
 		update();
 		cam.position.set(position);
-		cam.translate(direction);
+		cam.rotateAround(position, direction, (direction.x+direction.y)/3);
 		cam.update();
-		
 		System.out.println("dx: "+direction.x+" dy: "+direction.y+" x: "+position.x+" y: "+position.y+" z: "+position.z);
 		
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         
         modelBatch.begin(cam);
-        modelBatch.render(instance, environment);
+        modelBatch.render(instance2, environment);
         modelBatch.end();
 	}
 	
