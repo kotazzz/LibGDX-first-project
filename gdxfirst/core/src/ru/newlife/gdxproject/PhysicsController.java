@@ -1,4 +1,7 @@
-package st.rhapsody.voxelengine.lib.physics;
+/*
+ * 
+ * 
+ * package ru.newlife.gdxproject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -30,9 +33,6 @@ import st.rhapsody.voxelengine.test.terrain.block.BlockProvider;
 
 import java.util.*;
 
-/**
- * Created by nicklas on 5/2/14.
- */
 public class PhysicsController {
 
     private static final Object syncObject = new Object();
@@ -385,3 +385,4 @@ public class PhysicsController {
         }
     }
 }
+*/

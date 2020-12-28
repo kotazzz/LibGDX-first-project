@@ -4,9 +4,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
@@ -54,35 +57,36 @@ public class Block {
 		 long Attr = VertexAttributes.Usage.Position |
 	                VertexAttributes.Usage.TextureCoordinates |
 	                VertexAttributes.Usage.Normal;
+		 Attribute MAttr = new BlendingAttribute(GL20.GL_SRC_ALPHA|GL20.GL_ONE_MINUS_SRC_ALPHA);
 		 	this.texture = this.genearateTexture(texturesplited);
 	        modelBuilder.begin();
 	        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-	    			TextureAttribute.createDiffuse(this.texture.R)))
+	    			TextureAttribute.createDiffuse(this.texture.R), MAttr))
 	        .rect(-0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 
 	        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 
 	        		-0.5f*sizemultiplr, -0.5f*sizemultiplr, 0f, 0f, -1f*sizemultiplr);
 	        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-	    			TextureAttribute.createDiffuse(this.texture.L)))
+	    			TextureAttribute.createDiffuse(this.texture.L), MAttr))
 	        .rect(-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr,
 	        		0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
 	        		0.5f*sizemultiplr, 0.5f*sizemultiplr, 0f, 0f, 1f*sizemultiplr);
 	        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-	    			TextureAttribute.createDiffuse(this.texture.D)))
+	    			TextureAttribute.createDiffuse(this.texture.D), MAttr))
 	        .rect(-0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr,
 	        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr,
 	        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0f, -1f*sizemultiplr, 0f);
 	        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-	    			TextureAttribute.createDiffuse(this.texture.U)))
+	    			TextureAttribute.createDiffuse(this.texture.U), MAttr))
 	        .rect(-0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr,
 	        		0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
 	        		0.5f*sizemultiplr, -0.5f*sizemultiplr, 0f, 1f*sizemultiplr, 0f);
 	        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-	    			TextureAttribute.createDiffuse(this.texture.B)))
+	    			TextureAttribute.createDiffuse(this.texture.B), MAttr))
 	        .rect(-0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr,
 	        		0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr,
 	        		-0.5f*sizemultiplr, -0.5f*sizemultiplr, -1f*sizemultiplr, 0f, 0f);
 	        modelBuilder.part("box", GL20.GL_TRIANGLES, Attr, new Material(
-	    			TextureAttribute.createDiffuse(this.texture.F)))
+	    			TextureAttribute.createDiffuse(this.texture.F), MAttr))
 	        .rect(0.5f*sizemultiplr, -0.5f*sizemultiplr, -0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
 	        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
 	        		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 1f, 0f, 0f);
