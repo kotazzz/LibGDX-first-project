@@ -74,16 +74,15 @@ public class Main extends ApplicationAdapter {
     }
     public BlockTexture genearateTexture(TextureRegion sixsideblock) {
     	Texture atlas = sixsideblock.getTexture();
-        TextureRegion textureonesplited[][] = TextureRegion.split( atlas,  atlas.getWidth() / 5*6,  atlas.getHeight() / 40);
         int x = sixsideblock.getRegionX();
         int y = sixsideblock.getRegionY();
         BlockTexture texture = new BlockTexture(
-        		new TextureRegion(atlas, x+texture_size*0, y+texture_size*1, texture_size, texture_size),
-        		new TextureRegion(atlas, x+texture_size*1, y+texture_size*2, texture_size, texture_size),
-        		new TextureRegion(atlas, x+texture_size*2, y+texture_size*3, texture_size, texture_size),
-        		new TextureRegion(atlas, x+texture_size*3, y+texture_size*4, texture_size, texture_size),
-        		new TextureRegion(atlas, x+texture_size*4, y+texture_size*5, texture_size, texture_size),
-        		new TextureRegion(atlas, x+texture_size*5, y+texture_size*6, texture_size, texture_size)
+        		new TextureRegion(atlas, x+texture_size*0, y, texture_size, texture_size),
+        		new TextureRegion(atlas, x+texture_size*1, y, texture_size, texture_size),
+        		new TextureRegion(atlas, x+texture_size*2, y, texture_size, texture_size),
+        		new TextureRegion(atlas, x+texture_size*3, y, texture_size, texture_size),
+        		new TextureRegion(atlas, x+texture_size*4, y, texture_size, texture_size),
+        		new TextureRegion(atlas, x+texture_size*5, y, texture_size, texture_size)
         		);
      return texture;
         
@@ -106,8 +105,6 @@ public class Main extends ApplicationAdapter {
         textureRegions.put("brick1", textureslpited[0][1]);
         textureRegions.put("brick2", textureslpited[1][0]);
         textureRegions.put("brick3", textureslpited[1][1]);
-        TextureAttribute texat = TextureAttribute.createDiffuse(textureRegions.get("brick1"));
-        Material m = new Material(texat);
         long Attr = VertexAttributes.Usage.Position |
                 VertexAttributes.Usage.TextureCoordinates |
                 VertexAttributes.Usage.Normal;
@@ -144,15 +141,10 @@ public class Main extends ApplicationAdapter {
         		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr, 0.5f*sizemultiplr,
         		-0.5f*sizemultiplr, 0.5f*sizemultiplr, 1f, 0f, 0f);
         model = modelBuilder.end();
-        //model = modelBuilder.createBox(5f, 5f, 5f, 
-        //        new Material(TextureAttribute.createDiffuse(genearateTexture(textureRegions.get("block1")).T)),
-        //        Attr);
-        instance = new ModelInstance(model);
         
+        instance = new ModelInstance(model);
 	}
 	
-	public float x = 0;
-	public float y = 0;
 	public void update() {
 		if(Gdx.input.isKeyPressed(Keys.D)) {
 			position.x+= movespeed;
@@ -196,7 +188,6 @@ public class Main extends ApplicationAdapter {
 		cam.direction.add(direction.x, direction.y, 0);
 		cam.up.set(0, 1, 0);
 		cam.update();
-		System.out.println("dx: "+direction.x+" dy: "+direction.y+" x: "+position.x+" y: "+position.y+" z: "+position.z);
 		Gdx.gl.glClearColor(0.1f,0.1f,0.1f,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         
